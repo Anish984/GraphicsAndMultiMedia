@@ -1,0 +1,51 @@
+def mid_point_ellipse(rx, ry):
+    xc, yc = 0, 0
+    x, y = 0, ry
+
+    rx2 = rx * rx
+    ry2 = ry * ry
+    tworx2 = 2 * rx2
+    twory2 = 2 * ry2
+
+    px = 0
+    py = tworx2 * y
+
+    points = []
+
+    # Region 1
+    p1 = ry2 - (rx2 * ry) + (0.25 * rx2)
+    while px < py:
+        points += [(xc + x, yc + y), (xc - x, yc + y), (xc + x, yc - y), (xc - x, yc - y)]
+        x += 1
+        px += twory2
+        if p1 < 0:
+            p1 += ry2 + px
+        else:
+            y -= 1
+            py -= tworx2
+            p1 += ry2 + px - py
+
+    # Region 2
+    p2 = ry2 * (x + 0.5)**2 + rx2 * (y - 1)**2 - rx2 * ry2
+    while y >= 0:
+        points += [(xc + x, yc + y), (xc - x, yc + y), (xc + x, yc - y), (xc - x, yc - y)]
+        y -= 1
+        py -= tworx2
+        if p2 > 0:
+            p2 += rx2 - py
+        else:
+            x += 1
+            px += twory2
+            p2 += rx2 - py + px
+
+    return points
+
+# Plot
+ellipse = mid_point_ellipse(30, 20)
+x_vals, y_vals = zip(*ellipse)
+plt.figure()
+plt.title("Mid-Point Ellipse")
+plt.plot(x_vals, y_vals, 'go')
+plt.grid(True)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.show()
